@@ -13,47 +13,6 @@ namespace TaskManager.Repositories
     public class TaskRepository<TDocument> : ITaskRepository<TDocument>
         where TDocument : IDocument
     {
-        //private readonly TaskManagerContext _context;
-        //public TaskRepository(TaskManagerContext context)
-        //{
-        //    _context = context;
-
-        //}
-
-        //public TaskModel Get(string Id)
-        //    => _context.Tasks.SingleOrDefault(x => x.Id == Id);
-
-        //public IQueryable<TaskModel> GetAllActive()
-        //    => _context.Tasks.Where(x => !x.Done);
-
-        //public void Add(TaskModel task)
-        //{
-        //    _context.Tasks.Add(task);
-        //    _context.SaveChanges();
-        //}
-
-        //public void Update(string Id, TaskModel task)
-        //{
-        //    var result = _context.Tasks.SingleOrDefault(x => x.Id == Id);
-        //    if (result != null)
-        //    {
-        //        result.Name = task.Name;
-        //        result.Description = task.Description;
-        //        result.Done = task.Done;
-
-        //        _context.SaveChanges();
-        //    }
-        //}
-
-        //public void Delete(string Id)
-        //{
-        //    var result = _context.Tasks.SingleOrDefault(x => x.Id == Id);
-        //    if (result != null)
-        //    {
-        //        _context.Tasks.Remove(result);
-        //        _context.SaveChanges();
-        //    }
-        //}
         private readonly IMongoCollection<TDocument> _collection;
 
         public TaskRepository(IDatabaseSettings settings)
@@ -141,19 +100,21 @@ namespace TaskManager.Repositories
         }
         public virtual void UpdateTask(string id, TaskModel task)
         {
-            //var result = FindById(id);
-            //if (result != null && result is TaskModel item)
-            //{
-            //    item.Name = task.Name;
-            //    item.Description = task.Description;
-            //    item.Done = task.Done;
-            //}
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, new ObjectId(id));
             var update = Builders<TDocument>.Update
                 .Set("Name", task.Name)
                 .Set("Description", task.Description)
                 .Set("Done", task.Done);
             _collection.UpdateOne(filter, update);
+        }
+        public virtual void UpdateTaskAsync(string id, TaskModel task)
+        {
+            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, new ObjectId(id));
+            var update = Builders<TDocument>.Update
+                .Set("Name", task.Name)
+                .Set("Description", task.Description)
+                .Set("Done", task.Done);
+            _collection.UpdateOneAsync(filter, update);
         }
         public void ReplaceOne(TDocument document)
         {

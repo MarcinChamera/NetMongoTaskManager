@@ -9,11 +9,6 @@ namespace TaskManager.Repositories
 {
     public interface ITaskRepository<TDocument> where TDocument : IDocument
     {
-        //TaskModel Get(string Id);
-        //IQueryable<TaskModel> GetAllActive();
-        //void Add(TaskModel task);
-        //void Update(string Id, TaskModel task);
-        //void Delete(string Id);
         IQueryable<TDocument> AsQueryable();
 
         IEnumerable<TDocument> FilterBy(
